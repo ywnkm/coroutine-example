@@ -16,7 +16,8 @@ private suspend fun asyncMain(port: Int) {
         println("closing server...")
         serverChannel.close()
     })
-    serverChannel.bind(InetSocketAddress("127.0.0.1", port))
+    serverChannel.bind(InetSocketAddress("0.0.0.0", port))
+    serverChannel.configureBlocking(false)
     println("server started on port $port")
     while (true) {
         val client = serverChannel.acceptAsync()

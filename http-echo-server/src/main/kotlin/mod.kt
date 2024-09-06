@@ -28,7 +28,7 @@ public fun start(block: suspend () -> Unit) {
                 when {
                     key.isAcceptable -> handleAccept(key)
                     key.isReadable -> handleRead(key)
-                    key.isWritable -> handleWrite(key, selector)
+                    key.isWritable -> handleWrite(key)
                     else -> {
                         throw UnsupportedOperationException("OP ${key.readyOps()} not supported")
                     }
@@ -59,9 +59,6 @@ public suspend fun terminate() {
 // region IO operations
 
 public suspend fun ServerSocketChannel.acceptAsync(): SocketChannel {
-    // SAFETY: Set nonblocking mode
-    @Suppress("BlockingMethodInNonBlockingContext")
-    configureBlocking(false)
     val selectorContext = getSelector()
     return suspendCoroutine { continuation ->
         val key = register(selectorContext.selector, SelectionKey.OP_ACCEPT)

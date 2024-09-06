@@ -20,5 +20,8 @@ gradle-app.setting
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
+/.kotlin/
+
 /buildSrc/build/
 /http-echo-server/build/
+/http-echo-server-kn-uring/build/

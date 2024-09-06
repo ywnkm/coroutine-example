@@ -1,0 +1,2 @@
+headers = liburing.h
+compilerOpts = -I/usr/include -I/usr/include/x86_64-linux-gnu

@@ -47,20 +47,24 @@ internal fun handleRead(key: SelectionKey) {
     val (socketChannel, buffer, con) = key.attachment() as? ReadAttachment
         ?: throw IllegalStateException("no attachment found")
 
-    val result = socketChannel.read(buffer)
-    if (result == 0) {
-        // throw IllegalStateException("")
-        System.err.println("no read available")
+    try {
+        val result = socketChannel.read(buffer)
+        if (result == 0) {
+            // throw IllegalStateException("")
+            System.err.println("no read available")
+        }
+        con.resume(result)
+    } catch (e: Exception) {
+        con.resumeWithException(e)
     }
-    con.resume(result)
 }
 
-internal fun handleWrite(key: SelectionKey, selector: Selector) {
+internal fun handleWrite(key: SelectionKey) {
     val attach = key.attachment() as? WriteAttachment
         ?: throw IllegalStateException("no attachment found")
     val res = attach.socketChannel.write(attach.buffer)
     if (attach.buffer.remaining() > 0) {
-        val newKey = attach.socketChannel.register(selector, SelectionKey.OP_WRITE)
+        val newKey = attach.socketChannel.register(key.selector(), SelectionKey.OP_WRITE)
         newKey.attach(attach)
     } else {
         attach.continuation.resume(Unit)
