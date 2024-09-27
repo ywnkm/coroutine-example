@@ -5,6 +5,8 @@ plugins {
 
 kotlin {
 
+    explicitApi()
+
     linuxX64 {
 
         compilations.getByName("main") {
@@ -25,6 +27,14 @@ kotlin {
             executable {
                 entryPoint = "main"
                 linkerOpts("-L${project.file("src/nativeInterop/cinterop/liburing").absolutePath}", "-luring-ffi")
+            }
+        }
+    }
+
+    sourceSets {
+        all {
+            languageSettings {
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
             }
         }
     }
